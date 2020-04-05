@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="设置"
+        android:iconSpaceReserved="false">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="trans_switch"
+            android:summaryOff="关闭则仅中文识别"
+            android:summaryOn="选择一个翻译器,默认谷歌"
+            android:title="启用翻译"
+            android:iconSpaceReserved="false"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="trans_switch"
+            android:key="trans_select"
+            android:summaryOff="启用谷歌OCR+谷歌翻译"
+            android:summaryOn="启用谷歌OCR+百度翻译"
+            android:title="使用百度翻译"
+            android:iconSpaceReserved="false"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="trans_select"
+            android:key="trans_SBCS"
+            android:summaryOff="翻译英文等"
+            android:summaryOn="翻译日韩文等"
+            android:title="全半角转换"
+            android:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="关于"
+        android:iconSpaceReserved="false">
+        <Preference
+            android:title="Yuka的使用说明"
+            android:key="about_Yuka"
+            android:summary="各种奇怪的Q&amp;A"
+            android:iconSpaceReserved="false"/>
+        <Preference
+            android:title="关于开发者"
+            android:key="about_dev"
+            android:summary="绯绯色欠片"
+            android:iconSpaceReserved="false"/>
+        <Preference
+            android:title="捐献"
+            android:summary="毕设产生了经济效益？"
+            android:key="about_donate"
+            android:iconSpaceReserved="false"/>
+        <Preference
+            android:title="开源许可证"
+            android:summary="大佬们的轮子"
+            android:key="about_open_source"
+            android:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
