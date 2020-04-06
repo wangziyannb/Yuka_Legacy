@@ -1,4 +1,4 @@
-package com.wzy.tools;
+package com.wzy.yuka.tools;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,10 +18,8 @@ import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;

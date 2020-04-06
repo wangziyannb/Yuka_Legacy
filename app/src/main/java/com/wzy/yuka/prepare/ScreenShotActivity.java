@@ -1,18 +1,19 @@
-package com.wzy.yuka;
+package com.wzy.yuka.prepare;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.graphics.drawable.ColorDrawable;
-import android.media.projection.MediaProjectionManager;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.wzy.tools.Screenshot;
+import com.wzy.yuka.tools.Screenshot;
 
+// TODO: 2020/4/6  Activity Result API
 public class ScreenShotActivity extends Activity {
     private static final String TAG = "ScreenShotActivity";
     public static final int REQUEST_MEDIA_PROJECTION = 0x2893;

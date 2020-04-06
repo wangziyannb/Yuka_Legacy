@@ -1,4 +1,4 @@
-package com.wzy.yuka;
+package com.wzy.yuka.prepare;
 
 import android.app.Application;
 
@@ -8,6 +8,7 @@ public class InitApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        EasyFloat.init(this, true);
+        EasyFloat.init(this, false);
     }
+
 }
