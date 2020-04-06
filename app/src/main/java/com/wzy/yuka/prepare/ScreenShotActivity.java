@@ -1,11 +1,13 @@
 package com.wzy.yuka.prepare;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
@@ -33,6 +35,8 @@ public class ScreenShotActivity extends Activity {
         requestScreenShot();
     }
 
+    //unknown wrong
+    @SuppressLint("WrongConstant")
     public void requestScreenShot() {
         Log.d(TAG, "requestScreenShot");
         mMediaProjectionManager = (MediaProjectionManager) getSystemService("media_projection");
@@ -56,6 +60,10 @@ public class ScreenShotActivity extends Activity {
             Screenshot screenshot = new Screenshot(locationA, locationB, data);
             service.putExtra("screenshot", screenshot);
             startForegroundService(service);
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                finish();
+            }, 750);
         }
     }
 }

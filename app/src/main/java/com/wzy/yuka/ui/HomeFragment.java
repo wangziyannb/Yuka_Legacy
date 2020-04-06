@@ -1,6 +1,6 @@
 package com.wzy.yuka.ui;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +19,6 @@ import com.lzf.easyfloat.enums.ShowPattern;
 import com.lzf.easyfloat.enums.SidePattern;
 import com.lzf.easyfloat.interfaces.OnFloatCallbacks;
 import com.wzy.yuka.R;
-import com.wzy.yuka.prepare.ScreenShotActivity;
 import com.wzy.yuka.tools.ScaleImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     static final String TAG = "MainActivity";
     int[] locationA = new int[2];
     int[] locationB = new int[2];
-
+    public Act mAct;
     public static void showFloat(String a) {
         EasyFloat.showAppFloat(a);
         Log.d(TAG, "显示浮窗");
@@ -105,10 +104,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             });
                             view.findViewById(R.id.sw_ok).setOnClickListener(v -> {
                                 hideFloat("selectPanel");
-                                Intent intent = new Intent(getActivity(), ScreenShotActivity.class);
-                                intent.putExtra("locationA", locationA);
-                                intent.putExtra("locationB", locationB);
-                                startActivity(intent);
+                                // TODO: 2020/4/6 Fragment在后台无getActivity()
+                                mAct.getBackground(locationA, locationB);
                             });
                         })
                         .setShowPattern(ShowPattern.ALL_TIME)
@@ -166,4 +163,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        mAct = (Act) context;
+        super.onAttach(context);
+    }
+
+    public interface Act {
+        void getBackground(int[] locationA, int[] locationB);
+    }
+
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mAct=null;
+//    }
 }

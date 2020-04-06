@@ -48,6 +48,7 @@ public class ScreenShotService extends Service {
         @Override
         public void handleMessage(@NonNull Message msg) {
             TextView textView = EasyFloat.getAppFloatView("selectPanel").findViewById(R.id.translatedText);
+            textView.setText("");
             super.handleMessage(msg);
             if (msg.what == 0) {
                 Bundle bundle = msg.getData();
@@ -109,9 +110,10 @@ public class ScreenShotService extends Service {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    Log.d("ScreenshotUtils", "response get");
+                    String responseStr = response.body().string();
+                    Log.d("ScreenshotUtils", responseStr);
                     Bundle bundle = new Bundle();
-                    bundle.putString("response", response.body().string());
+                    bundle.putString("response", responseStr);
                     Message message = Message.obtain();
                     message.what = 1;
                     message.setData(bundle);

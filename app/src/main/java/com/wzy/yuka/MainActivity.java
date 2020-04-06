@@ -1,5 +1,6 @@
 package com.wzy.yuka;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -12,8 +13,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.wzy.yuka.prepare.ScreenShotActivity;
+import com.wzy.yuka.ui.HomeFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.Act {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -39,5 +42,14 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void getBackground(int[] locationA, int[] locationB) {
+        Intent intent = new Intent(this, ScreenShotActivity.class);
+        intent.putExtra("locationA", locationA);
+        intent.putExtra("locationB", locationB);
+        startActivity(intent);
+        finish();
     }
 }
