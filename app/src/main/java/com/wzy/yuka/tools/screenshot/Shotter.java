@@ -1,4 +1,4 @@
-package com.wzy.yuka.tools;
+package com.wzy.yuka.tools.screenshot;
 
 import android.annotation.TargetApi;
 import android.content.Context;

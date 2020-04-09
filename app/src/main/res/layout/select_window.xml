@@ -31,7 +31,7 @@
         android:text="选取目标位置后点圈圈\n每次调整大小后都必须位移选词窗"
         android:textColor="@color/text_color_DarkBg"/>
 
-    <com.wzy.yuka.tools.ScaleImageView
+    <com.wzy.yuka.tools.floatwindow.ScaleImageView
         android:id="@+id/sw_scale"
         android:layout_width="36dp"
         android:layout_height="36dp"

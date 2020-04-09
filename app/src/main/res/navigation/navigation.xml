@@ -8,16 +8,43 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.wzy.yuka.ui.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/main_legacy"></fragment>
+        android:label="主页"
+        tools:layout="@layout/home" />
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.wzy.yuka.ui.SettingsFragment"
-        android:label="Settings" />
+        android:label="设置" />
+
+    <fragment
+        android:id="@+id/nav_help"
+        android:name="com.wzy.yuka.ui.help.HelpFragment"
+        android:label="帮助" />
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.wzy.yuka.ui.AboutDev"
-        android:label="About" />
+        android:name="com.wzy.yuka.ui.about.AboutFragment"
+        android:label="关于">
+        <action
+            android:id="@+id/action_nav_about_to_nav_about_reference"
+            app:destination="@id/nav_about_reference" />
+        <action
+            android:id="@+id/action_nav_about_to_nav_about_opensource"
+            app:destination="@id/nav_about_opensource" />
+        <action
+            android:id="@+id/action_nav_about_to_nav_about_dev"
+            app:destination="@id/nav_about_dev" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_about_dev"
+        android:name="com.wzy.yuka.ui.about.AboutDev"
+        android:label="关于开发者" />
+    <fragment
+        android:id="@+id/nav_about_opensource"
+        android:name="com.wzy.yuka.ui.about.AboutOpenSource"
+        android:label="开源许可证" />
+    <fragment
+        android:id="@+id/nav_about_reference"
+        android:name="com.wzy.yuka.ui.about.AboutReference"
+        android:label="参考文献" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.wzy.yuka.tools;
+package com.wzy.yuka.tools.screenshot;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Headers;
@@ -91,7 +92,11 @@ public class Screenshot implements Parcelable  {
                 .url("https://wangclimxnb.xyz/detect")
                 .post(body)
                 .build();
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60 * 1000, TimeUnit.MILLISECONDS)
+                .readTimeout(5 * 60 * 1000, TimeUnit.MILLISECONDS)
+                .writeTimeout(5 * 60 * 1000, TimeUnit.MILLISECONDS)
+                .build();
         Call call = client.newCall(request);
         call.enqueue(callback);
     }

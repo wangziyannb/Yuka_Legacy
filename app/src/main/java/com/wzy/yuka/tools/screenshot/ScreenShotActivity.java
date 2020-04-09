@@ -1,4 +1,4 @@
-package com.wzy.yuka.prepare;
+package com.wzy.yuka.tools.screenshot;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,9 +13,6 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.wzy.yuka.tools.Screenshot;
-
-// TODO: 2020/4/6  Activity Result API
 public class ScreenShotActivity extends Activity {
     private static final String TAG = "ScreenShotActivity";
     public static final int REQUEST_MEDIA_PROJECTION = 0x2893;

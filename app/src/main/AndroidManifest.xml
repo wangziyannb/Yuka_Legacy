@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".prepare.InitApplication"
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".prepare.ScreenShotActivity"
+            android:name=".tools.screenshot.ScreenShotActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Dialog">
             <intent-filter>
@@ -36,7 +36,7 @@
         </activity>
 
         <service
-            android:name=".prepare.ScreenShotService"
+            android:name=".tools.screenshot.ScreenShotService"
             android:enabled="true"
             android:foregroundServiceType="mediaProjection" />
     </application>

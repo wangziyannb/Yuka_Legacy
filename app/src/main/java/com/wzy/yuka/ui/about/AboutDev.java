@@ -1,20 +1,25 @@
-package com.wzy.yuka.ui;
+package com.wzy.yuka.ui.about;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.PreferenceFragmentCompat;
+import androidx.fragment.app.Fragment;
 
 import com.wzy.yuka.R;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class AboutDev extends Fragment {
+    @Nullable
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.settings, rootKey);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.about_dev, container, false);
+        return root;
     }
-
 
     @Nullable
     @Override

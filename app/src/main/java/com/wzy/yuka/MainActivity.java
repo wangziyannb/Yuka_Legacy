@@ -1,6 +1,5 @@
 package com.wzy.yuka;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -13,28 +12,29 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-import com.wzy.yuka.prepare.ScreenShotActivity;
-import com.wzy.yuka.ui.HomeFragment;
+import com.wzy.yuka.tools.floatwindow.FloatWindow;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.Act {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_settings, R.id.nav_about)
+        mAppBarConfiguration = new AppBarConfiguration
+                .Builder(R.id.nav_home, R.id.nav_settings, R.id.nav_help, R.id.nav_about)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        FloatWindow floatWindow = new FloatWindow(this);
+        floatWindow.initFloatWindow();
     }
 
     @Override
@@ -43,13 +43,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Act 
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-    @Override
-    public void getBackground(int[] locationA, int[] locationB) {
-        Intent intent = new Intent(this, ScreenShotActivity.class);
-        intent.putExtra("locationA", locationA);
-        intent.putExtra("locationB", locationB);
-        startActivity(intent);
-        finish();
-    }
 }
+
+

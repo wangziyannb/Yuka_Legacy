@@ -1,4 +1,4 @@
-package com.wzy.yuka.prepare;
+package com.wzy.yuka.tools.screenshot;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -23,7 +23,6 @@ import androidx.preference.PreferenceManager;
 
 import com.lzf.easyfloat.EasyFloat;
 import com.wzy.yuka.R;
-import com.wzy.yuka.tools.Screenshot;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -47,7 +46,7 @@ public class ScreenShotService extends Service {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            TextView textView = EasyFloat.getAppFloatView("selectPanel").findViewById(R.id.translatedText);
+            TextView textView = EasyFloat.getAppFloatView("selectWindow").findViewById(R.id.translatedText);
             textView.setText("");
             super.handleMessage(msg);
             if (msg.what == 0) {
@@ -77,8 +76,8 @@ public class ScreenShotService extends Service {
         createNotificationChannel();
         Screenshot screenshot = intent.getParcelableExtra("screenshot");
         screenshot.getScreenshot(this, true, () -> {
-            EasyFloat.showAppFloat("selectPanel");
-            TextView textView = EasyFloat.getAppFloatView("selectPanel").findViewById(R.id.translatedText);
+            EasyFloat.showAppFloat("selectWindow");
+            TextView textView = EasyFloat.getAppFloatView("selectWindow").findViewById(R.id.translatedText);
             textView.setText("目标图片已发送，请等待...");
             textView.setTextColor(Color.WHITE);
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
