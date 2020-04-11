@@ -45,7 +45,7 @@ public class AboutFragment extends PreferenceFragmentCompat implements Preferenc
 
                 break;
             case "about_about_version":
-
+                // TODO: 2020/4/10  检查更新
                 break;
             case "about_about_repository":
                 Uri uri = Uri.parse("https://github.com/wangziyannb/Yuka");

@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.lzf.easyfloat.EasyFloat;
 import com.wzy.yuka.R;
+import com.wzy.yuka.tools.floatwindow.FloatWindow;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
     static final String TAG = "HomeFragment";
@@ -23,6 +23,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         View root = inflater.inflate(R.layout.home, container, false);
         root.findViewById(R.id.startBtn).setOnClickListener(this);
         root.findViewById(R.id.closeBtn).setOnClickListener(this);
+
         return root;
     }
 
@@ -30,12 +31,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startBtn:
-//                Navigation.findNavController(v).navigate(R.id.action_nav_home_to_nav_settings);
-                EasyFloat.showAppFloat("startBtn");
+                FloatWindow.initFloatWindow(getActivity());
                 break;
             case R.id.closeBtn:
-                EasyFloat.hideAppFloat("selectWindow");
-                EasyFloat.hideAppFloat("startBtn");
+                FloatWindow.dismissAllFloatWindow();
                 break;
             default:
                 break;

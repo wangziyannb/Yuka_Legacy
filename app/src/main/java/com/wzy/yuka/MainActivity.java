@@ -12,7 +12,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-import com.wzy.yuka.tools.floatwindow.FloatWindow;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        FloatWindow floatWindow = new FloatWindow(this);
-        floatWindow.initFloatWindow();
     }
 
     @Override

@@ -5,9 +5,13 @@
         android:title="说明">
         <Preference
             android:iconSpaceReserved="false"
-            android:key="help_instruction_instruction"
-            android:summary="基础操作"
-            android:title="使用说明" />
+            android:key="help_instruction_QA"
+            android:title="Q&amp;A" />
+        <Preference
+            android:iconSpaceReserved="false"
+            android:key="help_instruction_example_translate"
+            android:summary="为了理解炸鸡小姐的话语"
+            android:title="翻译示例" />
         <Preference
             android:iconSpaceReserved="false"
             android:key="help_instruction_advance"

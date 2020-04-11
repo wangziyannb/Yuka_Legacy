@@ -1,11 +1,13 @@
 package com.wzy.yuka.tools.screenshot;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -17,15 +19,11 @@ public class ScreenShotActivity extends Activity {
     private static final String TAG = "ScreenShotActivity";
     public static final int REQUEST_MEDIA_PROJECTION = 0x2893;
     private MediaProjectionManager mMediaProjectionManager;
-    int[] locationA = new int[2];
-    int[] locationB = new int[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        locationA = getIntent().getIntArrayExtra("locationA");
-        locationB = getIntent().getIntArrayExtra("locationB");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         getWindow().setDimAmount(0f);
@@ -41,6 +39,7 @@ public class ScreenShotActivity extends Activity {
         startActivityForResult(captureIntent, REQUEST_MEDIA_PROJECTION);
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_CANCELED) {
@@ -54,13 +53,18 @@ public class ScreenShotActivity extends Activity {
                 Log.e(TAG, "MediaProjection error");
             }
             Intent service = new Intent(this, ScreenShotService.class);
-            Screenshot screenshot = new Screenshot(locationA, locationB, data);
+            Screenshot screenshot = new Screenshot(data);
             service.putExtra("screenshot", screenshot);
-            startForegroundService(service);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                startService(service);
+            } else {
+                startForegroundService(service);
+            }
             Handler handler = new Handler();
             handler.postDelayed(() -> {
                 finish();
             }, 750);
         }
     }
+
 }

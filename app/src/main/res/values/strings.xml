@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">YUKA</string>
-    <string-array name="numbers">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+    <string name="True">1</string>
+    <string name="False">0</string>
+    <string-array name="mode">
+        <item>ocr</item>
+        <item>google</item>
+        <item>baidu</item>
     </string-array>
+    <string-array name="detect_languages">
+        <item>中文</item>
+        <item>英语</item>
+    </string-array>
+
 </resources>

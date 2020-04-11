@@ -5,24 +5,27 @@
     <PreferenceCategory
         android:title="基本设置"
         android:iconSpaceReserved="false">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="settings_trans_switch"
-            android:summaryOff="关闭则仅中文识别"
-            android:summaryOn="默认谷歌翻译"
-            android:title="启用翻译"
+        <ListPreference
+            android:entries="@array/detect_languages"
+            android:entryValues="@array/detect_languages"
+            android:key="settings_detect_language"
+            android:title="识别语言"
             android:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        android:dependency="settings_trans_switch"
         android:iconSpaceReserved="false"
         android:title="翻译设置">
         <SwitchPreference
             android:defaultValue="false"
+            android:iconSpaceReserved="false"
+            android:key="settings_trans_switch"
+            android:summaryOff="仅识别"
+            android:summaryOn="启用谷歌OCR+谷歌翻译"
+            android:title="启用翻译" />
+        <SwitchPreference
+            android:defaultValue="false"
             android:dependency="settings_trans_switch"
             android:key="settings_trans_select"
-            android:summaryOff="启用谷歌OCR+谷歌翻译"
-            android:summaryOn="启用谷歌OCR+百度翻译"
             android:title="使用百度翻译"
             android:iconSpaceReserved="false"/>
         <SwitchPreference

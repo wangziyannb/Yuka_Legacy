@@ -45,13 +45,13 @@ public class Shotter {
     private ImageReader mImageReader;
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
-    private String mLocalUrl = "";
     private OnShotListener mOnShotListener;
     int mHeight;
     int mWidth;
-    int[] locationA = null;
-    int[] locationB = null;
-    boolean isGrayscale = false;
+    private boolean isGrayscale = false;
+    private int[][] location;
+    private String[] mLocalUrl;
+    private boolean multiple = false;
 
     public Shotter(Context context, int reqCode, Intent data) {
 
@@ -88,16 +88,16 @@ public class Shotter {
 
     }
 
-    public void startScreenShot(OnShotListener onShotListener, String loc_url) {
+    public void startScreenShot(OnShotListener onShotListener, String[] loc_url) {
         mLocalUrl = loc_url;
         startScreenShot(onShotListener);
     }
 
     //增加仅截取部分图片(包括灰度设定)
-    public void startScreenShot(OnShotListener onShotListener, String loc_url, int[] locationA, int[] locationB, boolean isGrayscale) {
+    public void startScreenShot(OnShotListener onShotListener, String[] loc_url, int[][] location, boolean isGrayscale, boolean multiple) {
         mLocalUrl = loc_url;
-        this.locationA = locationA;
-        this.locationB = locationB;
+        this.multiple = multiple;
+        this.location = location;
         this.isGrayscale = isGrayscale;
         startScreenShot(onShotListener);
     }
@@ -128,14 +128,15 @@ public class Shotter {
     }
 
 
-    public class SaveTask extends AsyncTask<Image, Void, Bitmap> {
+    public class SaveTask extends AsyncTask<Image, Void, Bitmap[]> {
 
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
-        protected Bitmap doInBackground(Image... params) {
+        protected Bitmap[] doInBackground(Image... params) {
             if (params == null || params.length < 1 || params[0] == null) {
                 return null;
             }
+            Log.e("shotter", "开始工作");
             Image image = params[0];
             int width = image.getWidth();
             int height = image.getHeight();
@@ -150,11 +151,6 @@ public class Shotter {
                     Bitmap.Config.ARGB_8888);//虽然这个色彩比较费内存但是 兼容性更好
             bitmap.copyPixelsFromBuffer(buffer);
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
-            //TODO
-            if (locationA != null && locationB != null) {
-                bitmap = Bitmap.createBitmap(bitmap, locationA[0], locationA[1],
-                        locationB[0] - locationA[0], locationB[1] - locationA[1]);
-            }
             if (isGrayscale) {
                 Bitmap bmpGrayscale = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.RGB_565);
                 Canvas c = new Canvas(bmpGrayscale);
@@ -168,70 +164,88 @@ public class Shotter {
                 c.drawBitmap(bitmap, 0, 0, paint);
                 bitmap = Bitmap.createBitmap(bmpGrayscale);
             }
-            image.close();
-            File fileImage = null;
-            if (bitmap != null) {
-                try {
-                    //存储位置
-                    if (TextUtils.isEmpty(mLocalUrl)) {
-                        mLocalUrl = getContext().getExternalFilesDir("screenshot").getAbsoluteFile()
-                                +
-                                "/"
-                                +
-                                SystemClock.currentThreadTimeMillis() + ".jpg";
-                    }
-                    fileImage = new File(mLocalUrl);
-
-                    if (!fileImage.exists()) {
-                        fileImage.createNewFile();
-
-                    }
-                    FileOutputStream out = new FileOutputStream(fileImage);
-                    if (out != null) {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
-                        Log.d("shotter","存储成功");
-                        out.flush();
-                        out.close();
-                    }
-                    if (bitmap != null && !bitmap.isRecycled()) {
-                        bitmap.recycle();
-                    }
-                    if (mVirtualDisplay != null) {
-                        mVirtualDisplay.release();
-                    }
-                    if (mMediaProjection != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            mMediaProjection.stop();
-                        }
-                    }
-
-                    if (mOnShotListener != null) {
-                        Log.d("Shotter path:", mLocalUrl + "");
-                        mOnShotListener.onFinish();
-                    }else{
-                        Log.d("Shotter","noShotListener");
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    fileImage = null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    fileImage = null;
+            int num = 1;
+            if (location != null && multiple) {
+                num = location.length;
+            }
+            Bitmap[] bitmaps = new Bitmap[num];
+            if (location != null && multiple) {
+                for (int i = 0; i < num; i++) {
+                    bitmaps[i] = Bitmap.createBitmap(bitmap, location[i][0], location[i][1],
+                            location[i][2] - location[i][0], location[i][3] - location[i][1]);
+                    Log.d("shotter", i + "");
                 }
             }
+            image.close();
+            File fileImage = null;
+            for (int i = 0; i < bitmaps.length; i++) {
+                if (bitmaps[i] == null) {
+                    Log.e("shotter", "bitmap[" + i + "]==null");
+                }
+                if (bitmaps[i] != null) {
+                    try {
+                        //存储位置
+                        if (TextUtils.isEmpty(mLocalUrl[i])) {
+                            mLocalUrl[i] = getContext().getExternalFilesDir("screenshot").getAbsoluteFile()
+                                    +
+                                    "/"
+                                    +
+                                    SystemClock.currentThreadTimeMillis() + ".jpg";
+                        }
+                        fileImage = new File(mLocalUrl[i]);
+                        if (!fileImage.exists()) {
+                            fileImage.createNewFile();
+                        }
+                        FileOutputStream out = new FileOutputStream(fileImage);
+                        if (out != null) {
+                            bitmaps[i].compress(Bitmap.CompressFormat.JPEG, 70, out);
+                            Log.d("shotter", "存储成功");
+                            out.flush();
+                            out.close();
+                        }
+                        if (bitmaps[i] != null && !bitmaps[i].isRecycled()) {
+                            bitmaps[i].recycle();
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        fileImage = null;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        fileImage = null;
+                    }
+                }
+            }
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+            if (mVirtualDisplay != null) {
+                mVirtualDisplay.release();
+            }
+            if (mMediaProjection != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mMediaProjection.stop();
+                }
+            }
+            if (mOnShotListener != null) {
+                for (String str : mLocalUrl) {
+                    Log.d("Shotter path:", str + "");
+                }
+                mOnShotListener.onFinish();
+            } else {
+                Log.d("Shotter", "noShotListener");
+            }
             if (fileImage != null) {
-                return bitmap;
+                return bitmaps;
             }
             return null;
         }
 
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
+        protected void onPostExecute(Bitmap[] bitmap) {
             super.onPostExecute(bitmap);
         }
     }
-
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private MediaProjectionManager getMediaProjectionManager() {
