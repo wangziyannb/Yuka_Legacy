@@ -198,7 +198,7 @@ public class Shotter {
                         }
                         FileOutputStream out = new FileOutputStream(fileImage);
                         if (out != null) {
-                            bitmaps[i].compress(Bitmap.CompressFormat.JPEG, 70, out);
+                            bitmaps[i].compress(Bitmap.CompressFormat.JPEG, 90, out);
                             Log.d("shotter", "存储成功");
                             out.flush();
                             out.close();

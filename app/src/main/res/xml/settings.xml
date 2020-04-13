@@ -2,22 +2,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
-        android:title="基本设置"
-        android:iconSpaceReserved="false">
+    <PreferenceCategory android:title="基本设置">
         <ListPreference
             android:entries="@array/detect_languages"
-            android:entryValues="@array/detect_languages"
+            android:entryValues="@array/model"
             android:key="settings_detect_language"
-            android:title="识别语言"
-            android:iconSpaceReserved="false"/>
+            android:title="识别语言" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:iconSpaceReserved="false"
         android:title="翻译设置">
         <SwitchPreference
             android:defaultValue="false"
-            android:iconSpaceReserved="false"
             android:key="settings_trans_switch"
             android:summaryOff="仅识别"
             android:summaryOn="启用谷歌OCR+谷歌翻译"
@@ -26,35 +21,50 @@
             android:defaultValue="false"
             android:dependency="settings_trans_switch"
             android:key="settings_trans_select"
-            android:title="使用百度翻译"
-            android:iconSpaceReserved="false"/>
+            android:title="使用百度翻译" />
         <SwitchPreference
             android:defaultValue="false"
             android:dependency="settings_trans_select"
             android:key="settings_trans_SBCS"
             android:summaryOff="翻译英文等"
             android:summaryOn="翻译日韩文等"
-            android:title="全半角转换"
-            android:iconSpaceReserved="false"/>
+            android:title="全半角转换" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="进阶设置"
-        android:iconSpaceReserved="false">
+    <PreferenceCategory android:title="进阶设置">
         <SwitchPreference
             android:defaultValue="false"
             android:key="settings_window_multiple"
             android:summary="滑动选择数目"
             android:summaryOff="已禁用"
-            android:title="启用复数悬浮框"
-            android:iconSpaceReserved="false"/>
+            android:title="启用复数悬浮框" />
         <SeekBarPreference
             android:dependency="settings_window_multiple"
             android:key="settings_window_number"
             android:max="4"
             app:adjustable="true"
-            app:allowDividerBelow="false"
             app:min="1"
             app:seekBarIncrement="1" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="开发者选项">
+        <Preference
+            android:key="settings_debug_server"
+            android:title="检查服务器运行情况" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="settings_debug_log"
+            android:summary="位于android/data/www.wzy.yuka内"
+            android:title="输出错误log" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="settings_debug_savePic"
+            android:summary="位于android/data/www.wzy.yuka内"
+            android:title="保存截下的图片" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="settings_debug_upload"
+            android:title="上传错误信息（还没做）" />
+
+
     </PreferenceCategory>
 
 

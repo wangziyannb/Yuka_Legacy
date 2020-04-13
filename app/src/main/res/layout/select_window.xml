@@ -15,20 +15,12 @@
         android:padding="5dp"
         android:src="@drawable/ic_close" />
 
-    <ImageView
-        android:id="@+id/sw_ok"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_alignParentEnd="true"
-        android:padding="5dp"
-        android:src="@drawable/ic_check" />
-
     <TextView
         android:id="@+id/translatedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="选取目标位置后点对勾\n每次调整大小后都必须位移选词窗"
+        android:text="选取目标位置后点识别\n右下角可改变框体大小\n每次调整大小后都必须位移选词窗"
         android:textColor="@color/text_color_DarkBg"/>
 
     <com.wzy.yuka.tools.floatwindow.ScaleImageView
@@ -37,6 +29,5 @@
         android:layout_height="36dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:padding="8dp"
-        android:src="@drawable/icon_scale" />
+        android:padding="8dp" />
 </RelativeLayout>

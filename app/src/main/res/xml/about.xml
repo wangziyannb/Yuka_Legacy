@@ -17,7 +17,12 @@
         <Preference
             android:iconSpaceReserved="false"
             android:key="about_about_version"
-            android:title="版本号" />
+            android:title="Yuka版本号" />
+        <Preference
+            android:iconSpaceReserved="false"
+            android:key="about_about_server"
+            android:summary="1.95"
+            android:title="服务器版本" />
         <Preference
             android:iconSpaceReserved="false"
             android:key="about_about_repository"

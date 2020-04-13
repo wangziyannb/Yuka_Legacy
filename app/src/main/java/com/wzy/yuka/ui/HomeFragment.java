@@ -23,7 +23,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         View root = inflater.inflate(R.layout.home, container, false);
         root.findViewById(R.id.startBtn).setOnClickListener(this);
         root.findViewById(R.id.closeBtn).setOnClickListener(this);
-
+        root.findViewById(R.id.exitBtn).setOnClickListener(this);
         return root;
     }
 
@@ -34,8 +34,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 FloatWindow.initFloatWindow(getActivity());
                 break;
             case R.id.closeBtn:
-                FloatWindow.dismissAllFloatWindow();
+                FloatWindow.dismissAllFloatWindow(false);
                 break;
+            case R.id.exitBtn:
+                android.os.Process.killProcess(android.os.Process.myPid());
             default:
                 break;
         }

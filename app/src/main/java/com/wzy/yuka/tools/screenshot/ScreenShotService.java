@@ -1,28 +1,30 @@
 package com.wzy.yuka.tools.screenshot;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.wzy.yuka.R;
 import com.wzy.yuka.tools.floatwindow.FloatWindow;
+import com.wzy.yuka.tools.handler.GlobalHandler;
+import com.wzy.yuka.tools.network.HttpRequest;
+import com.wzy.yuka.tools.params.GetParams;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -34,7 +36,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class ScreenShotService extends Service {
+public class ScreenShotService extends Service implements GlobalHandler.HandleMsgListener {
     private static final String TAG = ScreenShotActivity.class.getSimpleName();
 
     @Override
@@ -42,23 +44,42 @@ public class ScreenShotService extends Service {
         super.onCreate();
     }
 
-    @SuppressLint("HandlerLeak")
-    final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            TextView[] textViews = FloatWindow.getAllTextViews();
-            super.handleMessage(msg);
-            if (msg.what == 0) {
-                Bundle bundle = msg.getData();
-                String error = bundle.getString("error");
-                for (TextView textview : textViews) {
-                    textview.setText(error);
-                    textview.setTextColor(getResources().getColor(R.color.colorError));
-                }
-            }
-            if (msg.what == 1) {
-                Bundle bundle = msg.getData();
-                String response = bundle.getString("response");
+    private GlobalHandler globalHandler;
+
+    @Override
+    public void handleMsg(Message msg) {
+        TextView[] textViews = FloatWindow.getAllTextViews();
+        Bundle bundle;
+        String error;
+        String response;
+        switch (msg.what) {
+            case 0:
+                bundle = msg.getData();
+                error = bundle.getString("error");
+                textViews[0].setText(error);
+                textViews[0].setTextColor(getResources().getColor(R.color.colorError));
+                break;
+            case 1:
+                bundle = msg.getData();
+                error = bundle.getString("error");
+                textViews[1].setText(error);
+                textViews[1].setTextColor(getResources().getColor(R.color.colorError));
+                break;
+            case 2:
+                bundle = msg.getData();
+                error = bundle.getString("error");
+                textViews[2].setText(error);
+                textViews[2].setTextColor(getResources().getColor(R.color.colorError));
+                break;
+            case 3:
+                bundle = msg.getData();
+                error = bundle.getString("error");
+                textViews[3].setText(error);
+                textViews[3].setTextColor(getResources().getColor(R.color.colorError));
+                break;
+            case 4:
+                bundle = msg.getData();
+                response = bundle.getString("response");
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -68,10 +89,10 @@ public class ScreenShotService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            if (msg.what == 2) {
-                Bundle bundle = msg.getData();
-                String response = bundle.getString("response");
+                break;
+            case 5:
+                bundle = msg.getData();
+                response = bundle.getString("response");
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -81,10 +102,10 @@ public class ScreenShotService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            if (msg.what == 3) {
-                Bundle bundle = msg.getData();
-                String response = bundle.getString("response");
+                break;
+            case 6:
+                bundle = msg.getData();
+                response = bundle.getString("response");
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -94,10 +115,10 @@ public class ScreenShotService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            if (msg.what == 4) {
-                Bundle bundle = msg.getData();
-                String response = bundle.getString("response");
+                break;
+            case 7:
+                bundle = msg.getData();
+                response = bundle.getString("response");
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -107,18 +128,105 @@ public class ScreenShotService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
+                break;
         }
-    };
+    }
+
+//    @SuppressLint("HandlerLeak")
+//    final Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(@NonNull Message msg) {
+//            TextView[] textViews = FloatWindow.getAllTextViews();
+//            super.handleMessage(msg);
+//            if (msg.what == 0) {
+//                Bundle bundle = msg.getData();
+//                String error = bundle.getString("error");
+//                textViews[0].setText(error);
+//                textViews[0].setTextColor(getResources().getColor(R.color.colorError));
+//            }
+//            if (msg.what == 1) {
+//                Bundle bundle = msg.getData();
+//                String error = bundle.getString("error");
+//                textViews[1].setText(error);
+//                textViews[1].setTextColor(getResources().getColor(R.color.colorError));
+//            }
+//            if (msg.what == 2) {
+//                Bundle bundle = msg.getData();
+//                String error = bundle.getString("error");
+//                textViews[2].setText(error);
+//                textViews[2].setTextColor(getResources().getColor(R.color.colorError));
+//            }
+//            if (msg.what == 3) {
+//                Bundle bundle = msg.getData();
+//                String error = bundle.getString("error");
+//                textViews[3].setText(error);
+//                textViews[3].setTextColor(getResources().getColor(R.color.colorError));
+//            }
+//            if (msg.what == 4) {
+//                Bundle bundle = msg.getData();
+//                String response = bundle.getString("response");
+//                Log.d(TAG, response);
+//                try {
+//                    JSONObject resultJson = new JSONObject(response);
+//                    String ocrResult = resultJson.getString("results");
+//                    textViews[0].setText(ocrResult);
+//                    textViews[0].setTextColor(Color.WHITE);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (msg.what == 5) {
+//                Bundle bundle = msg.getData();
+//                String response = bundle.getString("response");
+//                Log.d(TAG, response);
+//                try {
+//                    JSONObject resultJson = new JSONObject(response);
+//                    String ocrResult = resultJson.getString("results");
+//                    textViews[1].setText(ocrResult);
+//                    textViews[1].setTextColor(Color.WHITE);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (msg.what == 6) {
+//                Bundle bundle = msg.getData();
+//                String response = bundle.getString("response");
+//                Log.d(TAG, response);
+//                try {
+//                    JSONObject resultJson = new JSONObject(response);
+//                    String ocrResult = resultJson.getString("results");
+//                    textViews[2].setText(ocrResult);
+//                    textViews[2].setTextColor(Color.WHITE);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (msg.what == 7) {
+//                Bundle bundle = msg.getData();
+//                String response = bundle.getString("response");
+//                Log.d(TAG, response);
+//                try {
+//                    JSONObject resultJson = new JSONObject(response);
+//                    String ocrResult = resultJson.getString("results");
+//                    textViews[3].setText(ocrResult);
+//                    textViews[3].setTextColor(Color.WHITE);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
-        Screenshot screenshot = intent.getParcelableExtra("screenshot");
+        globalHandler = GlobalHandler.getInstance();
+        globalHandler.setHandleMsgListener(this);
+        final Screenshot screenshot = intent.getParcelableExtra("screenshot");
         screenshot.getScreenshot(this, FloatWindow.location, true, () -> {
             FloatWindow.showAllFloatWindow(true);
-            Callback[] callbacks = new Callback[FloatWindow.location.length];
-            for (int i = 0; i < FloatWindow.location.length; i++) {
+            Callback[] callbacks = new Callback[FloatWindow.NumOfFloatWindows - 1];
+            for (int i = 0; i < (FloatWindow.NumOfFloatWindows - 1); i++) {
                 int a = i;
                 callbacks[i] = new Callback() {
                     @Override
@@ -127,9 +235,9 @@ public class ScreenShotService extends Service {
                         Bundle bundle = new Bundle();
                         bundle.putString("error", e.toString());
                         Message message = Message.obtain();
-                        message.what = 0;
+                        message.what = a;
                         message.setData(bundle);
-                        handler.sendMessage(message);
+                        globalHandler.sendMessage(message);
                     }
 
                     @Override
@@ -137,18 +245,28 @@ public class ScreenShotService extends Service {
                         Bundle bundle = new Bundle();
                         bundle.putString("response", response.body().string());
                         Message message = Message.obtain();
-                        message.what = a + 1;
+                        message.what = a + 4;
                         message.setData(bundle);
-                        handler.sendMessage(message);
+                        globalHandler.sendMessage(message);
                     }
                 };
             }
-            screenshot.UploadImage(this, callbacks);
+            HttpRequest.requestTowardsYukaServer(GetParams.getParamsForReq(this), screenshot.getFileNames(), callbacks);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (!sharedPreferences.getBoolean("settings_debug_savePic", true)) {
+                globalHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        screenshot.cleanImage();
+                    }
+                }, 6000);
+            }
         });
+        //screenshot该如何回收呢？ service结束后自己释放吧
         return super.onStartCommand(intent, flags, startId);
     }
 
-
+    // TODO: 2020/4/12 通知去不掉了（可能是系统要求？） 
     @TargetApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -180,5 +298,11 @@ public class ScreenShotService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        globalHandler.removeCallbacks(null);
     }
 }

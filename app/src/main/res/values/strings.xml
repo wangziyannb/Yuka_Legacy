@@ -4,12 +4,18 @@
     <string name="False">0</string>
     <string-array name="mode">
         <item>ocr</item>
+        <item>translate</item>
+        <item>yuka</item>
+    </string-array>
+    <string-array name="model">
         <item>google</item>
-        <item>baidu</item>
+        <item>chn</item>
+        <item>eng</item>
     </string-array>
     <string-array name="detect_languages">
-        <item>中文</item>
-        <item>英语</item>
+        <item>自动 （Google Cloud Vision)</item>
+        <item>中文 (CTPN+DenseNET+CTC)(白底黑字最佳)</item>
+        <item>英语 (CTPN+DenseNET+CTC)（未训练完）</item>
     </string-array>
 
 </resources>

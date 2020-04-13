@@ -53,6 +53,7 @@ public class ScreenShotActivity extends Activity {
                 Log.e(TAG, "MediaProjection error");
             }
             Intent service = new Intent(this, ScreenShotService.class);
+            //于此初始化screenshot对象
             Screenshot screenshot = new Screenshot(data);
             service.putExtra("screenshot", screenshot);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -60,11 +61,11 @@ public class ScreenShotActivity extends Activity {
             } else {
                 startForegroundService(service);
             }
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                finish();
-            }, 750);
         }
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            finish();
+        }, 900);
     }
 
 }

@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
@@ -26,32 +28,46 @@ public class FloatWindow {
     //location 0 1 2 3 = lA 0 1 + lB 0 1
     public static int[][] location;
     private static String[] tags;
+    public static int NumOfFloatWindows = 0;
 
     public static void initFloatWindow(Activity activity) {
+        NumOfFloatWindows += 1;
         EasyFloat.with(activity)
                 .setTag("startBtn")
                 .setLayout(R.layout.start, view -> {
                     view.findViewById(R.id.button3).setOnClickListener(v -> {
-                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
-                        if (pref.getBoolean("settings_window_multiple", false)) {
-                            location = new int[pref.getInt("settings_window_number", 1)][4];
-                            tags = new String[pref.getInt("settings_window_number", 1)];
-                            multiFloatWindow(activity, pref.getInt("settings_window_number", 1));
-                        } else {
-                            location = new int[1][4];
-                            tags = new String[1];
-                            singleFloatWindow(activity, 0);
+                        if ((((Button) v).getText().equals("显示"))) {
+                            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
+                            if (pref.getBoolean("settings_window_multiple", false)) {
+                                location = new int[pref.getInt("settings_window_number", 1)][4];
+                                tags = new String[pref.getInt("settings_window_number", 1)];
+                                NumOfFloatWindows += pref.getInt("settings_window_number", 1);
+                                multiFloatWindow(activity, pref.getInt("settings_window_number", 1));
+                            } else {
+                                location = new int[1][4];
+                                tags = new String[1];
+                                NumOfFloatWindows += 1;
+                                multiFloatWindow(activity, 1);
+                            }
+                            showAllFloatWindow(false);
+                            ((Button) v).setText("隐藏");
+                        } else if ((((Button) v).getText().equals("隐藏"))) {
+                            hideAllFloatWindow();
+                            ((Button) v).setText("显示");
                         }
-                        showAllFloatWindow(false);
                     });
                     view.findViewById(R.id.button4).setOnClickListener(v -> {
-                        hideAllFloatWindow();
+                        android.os.Process.killProcess(android.os.Process.myPid());
                     });
                     view.findViewById(R.id.button5).setOnClickListener(v -> {
-                        hideAllFloatWindow();
-                        Intent intent = new Intent(activity, ScreenShotActivity.class);
-                        activity.startActivity(intent);
-                        activity.finish();
+                        if (NumOfFloatWindows > 1) {
+                            hideAllFloatWindow();
+                            Intent intent = new Intent(activity, ScreenShotActivity.class);
+                            activity.startActivity(intent);
+                            activity.finish();
+                        } else {
+                            Toast.makeText(activity, "还没有悬浮窗初始化呢", Toast.LENGTH_SHORT).show();
+                        }
                     });
                 })
                 .setShowPattern(ShowPattern.ALL_TIME)
@@ -80,12 +96,6 @@ public class FloatWindow {
                     });
                     view1.findViewById(R.id.sw_close).setOnClickListener(v1 -> {
                         EasyFloat.hideAppFloat("selectWindow" + index);
-                    });
-                    view1.findViewById(R.id.sw_ok).setOnClickListener(v1 -> {
-                        hideAllFloatWindow();
-                        Intent intent = new Intent(activity, ScreenShotActivity.class);
-                        activity.startActivity(intent);
-                        activity.finish();
                     });
                 })
                 .setShowPattern(ShowPattern.ALL_TIME)
@@ -148,30 +158,44 @@ public class FloatWindow {
 
     //准备隐藏以截图
     private static void hideAllFloatWindow() {
-        for (String tag : tags) {
-            EasyFloat.hideAppFloat(tag);
+        if (NumOfFloatWindows > 1) {
+            for (String tag : tags) {
+                EasyFloat.hideAppFloat(tag);
+            }
         }
     }
 
     //获得数据后显示
     public static void showAllFloatWindow(boolean after) {
-        for (String tag : tags) {
-            EasyFloat.showAppFloat(tag);
-            if (after) {
-                TextView textView = EasyFloat.getAppFloatView(tag).findViewById(R.id.translatedText);
-                textView.setText("目标图片已发送，请等待...");
-                textView.setTextColor(Color.WHITE);
+        if (NumOfFloatWindows > 1) {
+            for (String tag : tags) {
+                EasyFloat.showAppFloat(tag);
+                if (after) {
+                    TextView textView = EasyFloat.getAppFloatView(tag).findViewById(R.id.translatedText);
+                    textView.setText("目标图片已发送，请等待...");
+                    textView.setTextColor(Color.WHITE);
+                }
             }
         }
     }
 
-    public static void dismissAllFloatWindow() {
-
-        for (String tag : tags) {
-            EasyFloat.dismissAppFloat(tag);
+    public static void dismissAllFloatWindow(boolean changeOrientation) {
+        if (NumOfFloatWindows > 1) {
+            for (String tag : tags) {
+                EasyFloat.dismissAppFloat(tag);
+                NumOfFloatWindows -= 1;
+            }
+            if (!changeOrientation) {
+                EasyFloat.dismissAppFloat("startBtn");
+                NumOfFloatWindows = 0;
+            }
+        } else if (NumOfFloatWindows == 1) {
+            if (!changeOrientation) {
+                EasyFloat.dismissAppFloat("startBtn");
+                NumOfFloatWindows = 0;
+            }
         }
-        EasyFloat.dismissAppFloat("startBtn");
     }
-
-
 }
+
+
