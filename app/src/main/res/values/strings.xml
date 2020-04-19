@@ -13,9 +13,19 @@
         <item>eng</item>
     </string-array>
     <string-array name="detect_languages">
-        <item>自动 （Google Cloud Vision)</item>
-        <item>中文 (CTPN+DenseNET+CTC)(白底黑字最佳)</item>
-        <item>英语 (CTPN+DenseNET+CTC)（未训练完）</item>
+        <item>自动（Google Cloud Vision）</item>
+        <item>中文（白底黑字最佳）</item>
+        <item>英语（未训练完）</item>
+    </string-array>
+    <string-array name="translator_name">
+        <item>Google</item>
+        <item>百度翻译</item>
+        <item>有道翻译</item>
+    </string-array>
+    <string-array name="translator">
+        <item>google</item>
+        <item>baidu</item>
+        <item>youdao</item>
     </string-array>
 
 </resources>

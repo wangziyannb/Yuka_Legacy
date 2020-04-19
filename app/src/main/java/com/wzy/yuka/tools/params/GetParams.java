@@ -19,43 +19,42 @@ public class GetParams {
         //默认为 ocr - google -google - 0
         params[0] = resources.getStringArray(R.array.mode)[0];
         params[1] = resources.getStringArray(R.array.model)[0];
-        params[2] = "google";
+        params[2] = resources.getStringArray(R.array.translator)[0];
         params[3] = resources.getString(R.string.False);
 
         if (preferences.getBoolean("settings_trans_switch", false)) {
             //启用翻译
-            //translate-
             params[0] = resources.getStringArray(R.array.mode)[1];
-            if (preferences.getBoolean("settings_trans_select", false)) {
-                //启用百度翻译
-                //translate - google - baidu -0
-                params[2] = "baidu";
-                if (preferences.getBoolean("settings_trans_SBCS", false)) {
-                    //日韩文字启用全角
-                    //translate - google - baidu -1
-                    params[3] = resources.getString(R.string.True);
-                }
-            } else {
-                //启用默认谷歌翻译
-                params[0] = resources.getStringArray(R.array.mode)[1];
+            switch (preferences.getString("settings_trans_translator", resources.getStringArray(R.array.translator)[0])) {
+                case "google":
+                    break;
+                case "baidu":
+                    params[2] = resources.getStringArray(R.array.translator)[1];
+                    if (preferences.getBoolean("settings_trans_SBCS", false)) {
+                        //日韩文字启用全角
+                        params[3] = resources.getString(R.string.True);
+                    }
+                    break;
+                case "youdao":
+                    params[2] = resources.getStringArray(R.array.translator)[2];
+                    break;
             }
         } else {
             //未启用翻译
-            //ocr -
-            if (preferences.getString("settings_detect_language", resources.getStringArray(R.array.model)[0])
-                    .equals(resources.getStringArray(R.array.model)[1])) {
-                //启用中文识别
-                params[1] = resources.getStringArray(R.array.model)[1];
-            } else if (preferences.getString("settings_detect_language", resources.getStringArray(R.array.model)[0])
-                    .equals(resources.getStringArray(R.array.model)[2])) {
-                //启用英文识别
-                params[1] = resources.getStringArray(R.array.model)[2];
+            switch (preferences.getString("settings_detect_language", resources.getStringArray(R.array.model)[0])) {
+                case "google":
+                    break;
+                case "chn":
+                    params[1] = resources.getStringArray(R.array.model)[1];
+                    break;
+                case "eng":
+                    params[1] = resources.getStringArray(R.array.model)[2];
+                    break;
             }
         }
         for (String str : params) {
-            Log.d("Screenshot", str);
+            Log.d("params", str);
         }
         return params;
     }
-
 }

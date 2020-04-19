@@ -52,6 +52,7 @@ public class Shotter {
     private int[][] location;
     private String[] mLocalUrl;
     private boolean multiple = false;
+    private int delay;
 
     public Shotter(Context context, int reqCode, Intent data) {
 
@@ -94,11 +95,12 @@ public class Shotter {
     }
 
     //增加仅截取部分图片(包括灰度设定)
-    public void startScreenShot(OnShotListener onShotListener, String[] loc_url, int[][] location, boolean isGrayscale, boolean multiple) {
+    public void startScreenShot(OnShotListener onShotListener, String[] loc_url, int[][] location, boolean isGrayscale, boolean multiple, int delay) {
         mLocalUrl = loc_url;
         this.multiple = multiple;
         this.location = location;
         this.isGrayscale = isGrayscale;
+        this.delay = delay;
         startScreenShot(onShotListener);
     }
 
@@ -114,14 +116,11 @@ public class Shotter {
 
             Handler handler = new Handler();
 
-            handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Image image = mImageReader.acquireLatestImage();
-                                        new SaveTask().doInBackground(image);
-                                    }
-                                },
-                    750);
+            handler.postDelayed(() -> {
+                        Image image = mImageReader.acquireLatestImage();
+                        new SaveTask().doInBackground(image);
+                    },
+                    delay);
             //这里delay 时间过短容易导致 系统权限弹窗的阴影还没消失就完成了截图。 @see<a href="https://github.com/weizongwei5/AndroidScreenShot_SysApi/issues/4">issues</a>
         }
 
@@ -171,8 +170,16 @@ public class Shotter {
             Bitmap[] bitmaps = new Bitmap[num];
             if (location != null && multiple) {
                 for (int i = 0; i < num; i++) {
+                    int windowWidth = location[i][2] - location[i][0];
+                    int windowHeight = location[i][3] - location[i][1];
+                    if (windowWidth > getScreenWidth()) {
+                        windowWidth = getScreenWidth() - location[i][0];
+                    }
+                    if (windowHeight > getScreenHeight()) {
+                        windowHeight = getScreenHeight() - location[i][1];
+                    }
                     bitmaps[i] = Bitmap.createBitmap(bitmap, location[i][0], location[i][1],
-                            location[i][2] - location[i][0], location[i][3] - location[i][1]);
+                            windowWidth, windowHeight);
                     Log.d("shotter", i + "");
                 }
             }

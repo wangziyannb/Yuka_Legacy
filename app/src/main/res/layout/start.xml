@@ -18,9 +18,24 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:text="退出" />
     <Button
+        android:id="@+id/button7"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重置" />
+
+    <Button
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.Button.Small"
         android:text="识别" />
+
+    <Button
+        android:id="@+id/button6"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="停止"
+        android:visibility="gone" />
 </LinearLayout>

@@ -60,7 +60,7 @@ public class HttpRequest {
             return;
         }
         Request request = new Request.Builder()
-                .url("https://wangclimxnb.xyz/detect")
+                .url("https://wangclimxnb.xyz/yuka_main")
                 .post(body)
                 .build();
         OkHttpClient client = new OkHttpClient.Builder()
@@ -78,6 +78,8 @@ public class HttpRequest {
                 requestTowardsYukaServer(params, filePath[i], callbacks[i]);
             }
         } else {
+            Log.e(Tag, filePath.length + "");
+            Log.e(Tag, callbacks.length + "");
             Log.e(Tag, "Number not match");
         }
 

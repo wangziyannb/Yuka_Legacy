@@ -1,4 +1,4 @@
-package com.wzy.yuka.ui;
+package com.wzy.yuka.ui.setting;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.wzy.yuka.R;
-import com.wzy.yuka.tools.floatwindow.FloatWindow;
 import com.wzy.yuka.tools.handler.GlobalHandler;
 import com.wzy.yuka.tools.network.HttpRequest;
 
@@ -25,7 +24,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class SettingsFragment extends PreferenceFragmentCompat implements GlobalHandler.HandleMsgListener {
+public class SettingsDeveloper extends PreferenceFragmentCompat implements GlobalHandler.HandleMsgListener {
     private GlobalHandler globalHandler;
 
     @Override
@@ -47,17 +46,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Global
                 }
         }
     }
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.settings, rootKey);
+        setPreferencesFromResource(R.xml.settings_developer, rootKey);
         globalHandler = GlobalHandler.getInstance();
         globalHandler.setHandleMsgListener(this);
-        if (FloatWindow.NumOfFloatWindows > 0) {
-            Toast.makeText(getContext(), "没有关闭所有悬浮窗（包括启动按钮），设置暂时不可用", Toast.LENGTH_SHORT).show();
-            for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
-                getPreferenceScreen().getPreference(i).setEnabled(false);
-            }
-        }
         getPreferenceScreen().findPreference("settings_debug_server").setOnPreferenceClickListener(preference -> {
             HttpRequest.requestTowardsYukaServer(
                     new String[]{getContext().getResources().getStringArray(R.array.mode)[2]},
@@ -97,6 +91,5 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Global
             return AnimationUtils.loadAnimation(getActivity(), R.anim.scene_close_exit);
         }
     }
-
 
 }
