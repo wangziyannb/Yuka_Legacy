@@ -20,6 +20,7 @@ public class GlobalHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
+
         if (getHandleMsgListener() != null) {
             getHandleMsgListener().handleMsg(msg);
         } else {

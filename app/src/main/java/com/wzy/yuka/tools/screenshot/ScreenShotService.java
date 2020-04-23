@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
@@ -47,10 +46,39 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
         super.onCreate();
     }
 
-    public static boolean continuous = false;
+    private boolean continuous = false;
     private GlobalHandler globalHandler;
     private int interval;
+    private Runnable continuouslySS = () -> {
+        Screenshot screenshot = new Screenshot(this, FloatWindow.location);
+        FloatWindow.hideAllFloatWindow();
+        screenshot.getScreenshot(true, 300, HomeFragment.data, () -> {
+            FloatWindow.showAllFloatWindow(true);
+            Callback callback = new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Log.e("ScreenshotUtils", "Failure in" + 0);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("error", e.toString());
+                    Message message = Message.obtain();
+                    message.what = 0;
+                    message.setData(bundle);
+                    globalHandler.sendMessage(message);
+                }
 
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("response", response.body().string());
+                    Message message = Message.obtain();
+                    message.what = 10;
+                    message.setData(bundle);
+                    globalHandler.sendMessage(message);
+                }
+            };
+            HttpRequest.requestTowardsYukaServer(GetClientParams.getParamsForReq(this), screenshot.getFileNames()[0], callback);
+        });
+    };
     @Override
     public void handleMsg(Message msg) {
         TextView[] textViews = FloatWindow.getAllTextViews();
@@ -65,24 +93,28 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
                 error = bundle.getString("error");
                 textViews[0].setText(error);
                 textViews[0].setTextColor(getResources().getColor(R.color.colorError));
+                globalHandler.removeMessages(0);
                 break;
             case 1:
                 bundle = msg.getData();
                 error = bundle.getString("error");
                 textViews[1].setText(error);
                 textViews[1].setTextColor(getResources().getColor(R.color.colorError));
+                globalHandler.removeMessages(1);
                 break;
             case 2:
                 bundle = msg.getData();
                 error = bundle.getString("error");
                 textViews[2].setText(error);
                 textViews[2].setTextColor(getResources().getColor(R.color.colorError));
+                globalHandler.removeMessages(2);
                 break;
             case 3:
                 bundle = msg.getData();
                 error = bundle.getString("error");
                 textViews[3].setText(error);
                 textViews[3].setTextColor(getResources().getColor(R.color.colorError));
+                globalHandler.removeMessages(3);
                 break;
             case 4:
                 bundle = msg.getData();
@@ -90,6 +122,7 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
                 fileName = bundle.getString("fileName");
                 save = bundle.getBoolean("save");
                 Log.d(TAG, response);
+                globalHandler.removeMessages(4);
                 try {
                     JSONObject resultJson = new JSONObject(response);
                     String result = resultJson.getString("results");
@@ -109,6 +142,7 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
                 response = bundle.getString("response");
                 fileName = bundle.getString("fileName");
                 save = bundle.getBoolean("save");
+                globalHandler.removeMessages(5);
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -127,6 +161,7 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
                 response = bundle.getString("response");
                 fileName = bundle.getString("fileName");
                 save = bundle.getBoolean("save");
+                globalHandler.removeMessages(6);
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -145,6 +180,7 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
                 response = bundle.getString("response");
                 fileName = bundle.getString("fileName");
                 save = bundle.getBoolean("save");
+                globalHandler.removeMessages(7);
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -161,6 +197,7 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
             case 10:
                 bundle = msg.getData();
                 response = bundle.getString("response");
+                globalHandler.removeMessages(10);
                 Log.d(TAG, response);
                 try {
                     JSONObject resultJson = new JSONObject(response);
@@ -271,40 +308,9 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
 
     private void getScreenshotContinuously() {
         if (continuous) {
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                Screenshot screenshot = new Screenshot(this, FloatWindow.location);
-                FloatWindow.hideAllFloatWindow();
-                screenshot.getScreenshot(true, 300, HomeFragment.data, () -> {
-                    FloatWindow.showAllFloatWindow(true);
-                    Callback callback = new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            Log.e("ScreenshotUtils", "Failure in" + 0);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("error", e.toString());
-                            Message message = Message.obtain();
-                            message.what = 0;
-                            message.setData(bundle);
-                            globalHandler.sendMessage(message);
-                        }
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("response", response.body().string());
-                            Message message = Message.obtain();
-                            message.what = 10;
-                            message.setData(bundle);
-                            globalHandler.sendMessage(message);
-                        }
-                    };
-                    HttpRequest.requestTowardsYukaServer(GetClientParams.getParamsForReq(this), screenshot.getFileNames()[0], callback);
-                });
-            }, interval * 1000);
+            globalHandler.postDelayed(continuouslySS, interval * 1000);
         }
     }
-
 
     @Nullable
     @Override
@@ -314,6 +320,8 @@ public class ScreenShotService extends Service implements GlobalHandler.HandleMs
 
     @Override
     public void onDestroy() {
+        globalHandler.removeCallbacks(continuouslySS);
+        continuous = false;
         stopForeground(true);
         super.onDestroy();
         globalHandler.removeCallbacks(null);

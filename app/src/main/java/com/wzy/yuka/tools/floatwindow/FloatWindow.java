@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lzf.easyfloat.EasyFloat;
 import com.lzf.easyfloat.enums.ShowPattern;
@@ -23,6 +25,9 @@ import com.wzy.yuka.tools.screenshot.ScreenShotService;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Float window.
+ */
 public class FloatWindow {
     static final String TAG = "FloatWindow";
     //location 0 1 2 3 = lA 0 1 + lB 0 1
@@ -211,7 +216,6 @@ public class FloatWindow {
 //                .setLocation(100, 100).show();
         EasyFloat.with(activity)
                 .setTag("mainFloatBall")
-                .setAppFloatAnimator(null)
                 .setLayout(R.layout.test, v -> {
                     ImageButton imageButton = v.findViewById(R.id.test1);
                     imageButton.getBackground().setAlpha(0);
@@ -250,14 +254,36 @@ public class FloatWindow {
                                     case 1:
                                         imageButtons[i].setId(R.id.detect_button);
                                         imageButtons[i].setBackgroundResource(R.drawable.detect);
+                                        imageButtons[i].setOnClickListener(v2 -> {
+                                            if (NumOfFloatWindows > 1) {
+                                                hideAllFloatWindow();
+                                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                                                    activity.startService(service);
+                                                } else {
+                                                    activity.startForegroundService(service);
+                                                }
+                                            } else {
+                                                Toast.makeText(activity, "还没有悬浮窗初始化呢，请从控制中启用悬浮窗", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                         break;
                                     case 2:
                                         imageButtons[i].setId(R.id.reset_button);
                                         imageButtons[i].setBackgroundResource(R.drawable.reset);
+                                        imageButtons[i].setOnClickListener(v2 -> {
+                                            activity.stopService(service);
+                                            reset(activity);
+//                                            v.findViewById(R.id.reset_button).performClick();
+                                        });
                                         break;
                                     case 3:
                                         imageButtons[i].setId(R.id.exit_button);
                                         imageButtons[i].setBackgroundResource(R.drawable.exit);
+                                        imageButtons[i].setOnClickListener(v2 -> {
+                                            activity.stopService(service);
+                                            activity.finishAffinity();
+                                            System.exit(0);
+                                        });
                                         break;
                                 }
                                 floatWindows.addView(imageButtons[i]);
@@ -274,7 +300,6 @@ public class FloatWindow {
                             WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
                             windowManager.updateViewLayout(view, layoutParams);
                         }
-
                     });
                 })
                 .setSidePattern(SidePattern.RESULT_HORIZONTAL)
@@ -284,74 +309,83 @@ public class FloatWindow {
     }
 
     private static void multiFloatWindow(Activity activity, int num) {
+        //todo 需要修改以支持单独添加窗口的多窗口模式
         for (int i = 0; i < num; i++) {
             tags[i] = "selectWindow" + i;
             singleFloatWindow(activity, i);
         }
     }
 
+
     private static void singleFloatWindow(Activity activity, int index) {
-        EasyFloat.with(activity)
-                .setTag("selectWindow" + index)
-                .setLayout(R.layout.select_window, view1 -> {
-                    RelativeLayout rl = view1.findViewById(R.id.testFloatScale);
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) rl.getLayoutParams();
-                    ScaleImageView si = view1.findViewById(R.id.sw_scale);
-                    si.setOnScaledListener((x, y, event) -> {
-                        params.width += (int) x;
-                        params.height += (int) y;
-                        rl.setLayoutParams(params);
-                        //locationA[0]左上角对左边框，locationA[1]左上角对上边框
-                    });
-                    view1.findViewById(R.id.sw_close).setOnClickListener(v1 -> {
-                        EasyFloat.hideAppFloat("selectWindow" + index);
-                    });
-                })
-                .setShowPattern(ShowPattern.ALL_TIME)
-                .setLocation(100 + index * 40, 100 + index * 40)
-                .setAppFloatAnimator(null)
-                .registerCallbacks(new OnFloatCallbacks() {
-                    @Override
-                    public void createdResult(boolean b, @org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable View view) {
-                        if (b) {
+        if (!(tags.length > index)) {
+            return;
+        } else {
+            NumOfFloatWindows += 1;
+            tags[index] = "selectWindow" + index;
+            EasyFloat.with(activity)
+                    .setTag(tags[index])
+                    .setLayout(R.layout.select_window, view1 -> {
+                        RelativeLayout rl = view1.findViewById(R.id.testFloatScale);
+                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) rl.getLayoutParams();
+                        ScaleImageView si = view1.findViewById(R.id.sw_scale);
+                        si.setOnScaledListener((x, y, event) -> {
+                            params.width += (int) x;
+                            params.height += (int) y;
+                            rl.setLayoutParams(params);
+                            //locationA[0]左上角对左边框，locationA[1]左上角对上边框
+                        });
+                        view1.findViewById(R.id.sw_close).setOnClickListener(v1 -> {
+                            EasyFloat.hideAppFloat("selectWindow" + index);
+                        });
+                    })
+                    .setShowPattern(ShowPattern.ALL_TIME)
+                    .setLocation(100 + index * 40, 100 + index * 40)
+                    .setAppFloatAnimator(null)
+                    .registerCallbacks(new OnFloatCallbacks() {
+                        @Override
+                        public void createdResult(boolean b, @org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable View view) {
+                            if (b) {
+                                getLocation(view, index);
+                            }
+                        }
+
+                        @Override
+                        public void show(@NotNull View view) {
+                            //locationA[0]左上角对左边框，locationA[1]左上角对上边框
                             getLocation(view, index);
                         }
-                    }
 
-                    @Override
-                    public void show(@NotNull View view) {
-                        //locationA[0]左上角对左边框，locationA[1]左上角对上边框
-                        getLocation(view, index);
-                    }
+                        @Override
+                        public void hide(@NotNull View view) {
+                            //locationA[0]左上角对左边框，locationA[1]左上角对上边框
+                            getLocation(view, index);
+                        }
 
-                    @Override
-                    public void hide(@NotNull View view) {
-                        //locationA[0]左上角对左边框，locationA[1]左上角对上边框
-                        getLocation(view, index);
-                    }
+                        @Override
+                        public void dismiss() {
 
-                    @Override
-                    public void dismiss() {
+                        }
 
-                    }
+                        @Override
+                        public void touchEvent(@NotNull View view, @NotNull MotionEvent motionEvent) {
+                            //locationA[0]左上角对左边框，locationA[1]左上角对上边框
+                            getLocation(view, index);
+                        }
 
-                    @Override
-                    public void touchEvent(@NotNull View view, @NotNull MotionEvent motionEvent) {
-                        //locationA[0]左上角对左边框，locationA[1]左上角对上边框
-                        getLocation(view, index);
-                    }
+                        @Override
+                        public void drag(@NotNull View view, @NotNull MotionEvent motionEvent) {
 
-                    @Override
-                    public void drag(@NotNull View view, @NotNull MotionEvent motionEvent) {
+                        }
 
-                    }
-
-                    @Override
-                    public void dragEnd(@NotNull View view) {
-                        //locationA[0]左上角对左边框，locationA[1]左上角对上边框
-                        getLocation(view, index);
-                    }
-                }).show();
+                        @Override
+                        public void dragEnd(@NotNull View view) {
+                            //locationA[0]左上角对左边框，locationA[1]左上角对上边框
+                            getLocation(view, index);
+                        }
+                    })
+                    .show();
+        }
     }
 
     private static void getLocation(View view, int index) {
@@ -377,7 +411,12 @@ public class FloatWindow {
         }
     }
 
-    //获得数据后显示
+
+    /**
+     * Show all float window.
+     *
+     * @param after 如果是截图后的，应当更改文字提示用户
+     */
     public static void showAllFloatWindow(boolean after) {
         if (NumOfFloatWindows > 1) {
             for (String tag : tags) {
@@ -391,22 +430,35 @@ public class FloatWindow {
         }
     }
 
-    public static void dismissAllFloatWindow(boolean changeOrientation) {
+    /**
+     * Dismiss all float window.
+     *
+     * @param except 是否将主悬浮球也一并删除
+     */
+    public static void dismissAllFloatWindow(boolean except) {
         if (NumOfFloatWindows > 1) {
             for (String tag : tags) {
                 EasyFloat.dismissAppFloat(tag);
                 NumOfFloatWindows -= 1;
             }
-            if (!changeOrientation) {
+            if (!except) {
                 EasyFloat.dismissAppFloat("startBtn");
                 NumOfFloatWindows = 0;
             }
         } else if (NumOfFloatWindows == 1) {
-            if (!changeOrientation) {
+            if (!except) {
                 EasyFloat.dismissAppFloat("startBtn");
                 NumOfFloatWindows = 0;
             }
         }
+    }
+
+    private static void reset(Activity activity) {
+        dismissAllFloatWindow(true);
+        location = new int[1][4];
+        tags = new String[1];
+        NumOfFloatWindows = 1;
+        singleFloatWindow(activity, 0);
     }
 }
 
