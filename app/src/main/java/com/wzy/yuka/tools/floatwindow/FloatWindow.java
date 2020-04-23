@@ -453,6 +453,7 @@ public class FloatWindow {
         }
     }
 
+    //caibitajinxiong
     private static void reset(Activity activity) {
         dismissAllFloatWindow(true);
         location = new int[1][4];
