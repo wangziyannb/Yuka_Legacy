@@ -1,5 +1,5 @@
 # Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
+# You can settings_floatwindow the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
 #
 # For more details, see

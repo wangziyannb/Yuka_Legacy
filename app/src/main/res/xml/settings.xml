@@ -55,7 +55,7 @@
         <SwitchPreference
             android:key="settings_continuousMode"
             android:summary="将强制快速截图，需禁用复数悬浮框"
-            android:title="连续识别" />
+            android:title="半自动模式" />
         <SeekBarPreference
             android:dependency="settings_continuousMode"
             android:key="settings_continuousMode_interval"

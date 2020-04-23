@@ -9,10 +9,11 @@ import androidx.preference.PreferenceManager;
 
 import com.wzy.yuka.R;
 
-public class GetParams {
+public class GetClientParams {
 
     public static String[] getParamsForReq(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
         //0:mode 1:model 2:translator 3:SBCS
         String[] params = new String[4];
         Resources resources = context.getResources();

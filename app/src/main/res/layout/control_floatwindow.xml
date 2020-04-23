@@ -2,33 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/input_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="输入文本"
-        android:singleLine="false"
-        android:visibility="invisible" />
-
     <Button
-        android:id="@+id/startBtn"
+        android:id="@+id/button3"
+        style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="启动" />
+        android:text="启用" />
 
     <Button
-        android:id="@+id/closeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="关闭" />
-
-    <Button
-        android:id="@+id/exitBtn"
+        android:id="@+id/button4"
+        style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="退出" />
 
+    <Button
+        android:id="@+id/button7"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重置" />
+
+    <Button
+        android:id="@+id/button8"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设置" />
 </LinearLayout>

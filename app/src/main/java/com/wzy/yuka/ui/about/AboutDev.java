@@ -17,7 +17,8 @@ public class AboutDev extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.about_dev, container, false);
+//        View root = inflater.inflate(R.layout.about_dev, container, false);
+        View root = inflater.inflate(R.layout.test, container, false);
         return root;
     }
 
