@@ -16,6 +16,15 @@
         android:src="@drawable/close" />
 
     <ImageView
+        android:id="@+id/sw_addwindows"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="36dp"
+        android:padding="5dp"
+        android:src="@drawable/add_windows" />
+
+    <ImageView
         android:id="@+id/sw_translate"
         android:layout_width="32dp"
         android:layout_height="32dp"
