@@ -5,13 +5,6 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/input_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="输入文本"
-        android:singleLine="false"
-        android:visibility="invisible" />
 
     <Button
         android:id="@+id/startBtn"

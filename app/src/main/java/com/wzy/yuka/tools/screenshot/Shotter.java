@@ -76,10 +76,8 @@ public class Shotter {
         }
     }
 
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void virtualDisplay() {
-
         mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
                 mWidth,
                 mHeight,
@@ -155,8 +153,6 @@ public class Shotter {
                 Canvas c = new Canvas(bmpGrayscale);
                 Paint paint = new Paint();
                 ColorMatrix cm = new ColorMatrix();
-                //Set the matrix to affect the saturation of colors.
-                //A value of 0 maps the color to gray-scale.
                 cm.setSaturation(0);
                 ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
                 paint.setColorFilter(f);

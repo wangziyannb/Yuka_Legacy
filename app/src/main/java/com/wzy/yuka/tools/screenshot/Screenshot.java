@@ -31,6 +31,10 @@ class Screenshot {
         shotter.startScreenShot(onShotListener, fileName, location, isGrayscale, true, delay);
     }
 
+    int[][] getLocation() {
+        return location;
+    }
+
     String[] getFileNames() {
         return fileName;
     }
@@ -41,7 +45,5 @@ class Screenshot {
             image.delete();
         }
     }
-
-
 }
 

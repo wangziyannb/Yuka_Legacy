@@ -15,10 +15,12 @@ import okhttp3.RequestBody;
 
 public class HttpRequest {
     private static String Tag = HttpRequest.class.getSimpleName();
-
     /**
+     * Request towards yuka server.
+     *
      * @param params   请求参数
-     * @param filePath 文件路径
+     * @param filePath 文件地址
+     * @param callback 回调
      */
     public static void requestTowardsYukaServer(String[] params, String filePath, okhttp3.Callback callback) {
         File image = new File(filePath);
@@ -72,6 +74,7 @@ public class HttpRequest {
         call.enqueue(callback);
     }
 
+    //多悬浮窗模式，对单次请求的多次调用
     public static void requestTowardsYukaServer(String[] params, String[] filePath, okhttp3.Callback[] callbacks) {
         if (filePath.length == callbacks.length) {
             for (int i = 0; i < filePath.length; i++) {
